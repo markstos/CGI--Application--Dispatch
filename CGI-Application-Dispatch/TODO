@@ -1,0 +1,16 @@
+For the full 2.0 release
++ plugin to handle URL creation from dispatch table ( Cees has starter code in CGI::Application::Dispatch::URL)
++ keep parsed rules around in a class structure so it doesn't have to be done every time
++ optional URL cache so that if it sees the same URL more than one, it doesn't even have
+    to cycle through the parsed rules, it already knows which one to go to
+    (This has been started, but could use refinement, such as limiting the cache
+     size to 10,000 entries to possibly avoid some kind of attack).
+
++ consider improving 404 support. It would nice to: 
+    - make the webserver handle this.
+    - If we can't pass the job back to the webserver, then
+      provide a mechanism for allowing people to set a custom 404 page. 
+
+    - right now a 404 can be returned if an application module doesn't compile. 
+      It would be better to return error 500 in this case, and report the name
+      of the module with the compile error. 
