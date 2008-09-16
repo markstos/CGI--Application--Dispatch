@@ -1266,7 +1266,9 @@ a namespace of modules to run.
 
 L<CGI::Application>, L<Apache::Dispatch>
 
-=head1 LICENSE
+=head1 COPYRIGHT & LICENSE
+
+Copyright Michael Peters and Mark Stosberg 2008, all rights reserved. 
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

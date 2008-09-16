@@ -45,6 +45,10 @@ Here's an example of defining a custom 'page' parameter:
         qr|/([^/]+)/([^/]+)/page(\d+)\.html/?| => { names => [qw(app rm page)] },
 
 
+=head1 COPYRIGHT & LICENSE
+
+Copyright Michael Peters and Mark Stosberg 2008, all rights reserved. 
+
 =head1 SEE ALSO
 
 L<CGI::Application>, L<CGI::Application::Dispatch>
