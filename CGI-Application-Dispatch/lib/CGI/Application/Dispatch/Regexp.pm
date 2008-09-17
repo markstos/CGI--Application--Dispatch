@@ -2,6 +2,8 @@ package CGI::Application::Dispatch::Regexp;
 use strict;
 use base 'CGI::Application::Dispatch';
 
+our $VERSION = '2.13';
+
 =pod
 
 =head1 NAME

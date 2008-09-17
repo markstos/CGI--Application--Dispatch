@@ -1,6 +1,6 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
-2.13 Mar 08, 2007
+2.13 Sep 16, 2008
     - Fixing various install issues by having a dumber Makefile.PL and Build.PL
       (#37859, Thanks to lkundrak)
 
