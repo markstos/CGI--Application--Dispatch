@@ -4,7 +4,7 @@ use warnings;
 use Carp qw(carp cluck);
 use Exception::Class::TryCatch qw(catch);
 
-our $VERSION = '2.13';
+our $VERSION = '2.14';
 our $DEBUG   = 0;
 
 BEGIN {
@@ -101,7 +101,7 @@ Under normal cgi
 =head1 DESCRIPTION
 
 This module provides a way (as a mod_perl handler or running under vanilla CGI) to look at
-the path (C<< $r->path_info >> or C<$ENV{PATH_INFO}>) of the incoming request, parse
+the path (as returned by L<dispatch_path>) of the incoming request, parse
 off the desired module and it's run mode, create an instance of that module and run it.
 
 It currently supports both generations of mod_perl (1.x and 2.x). Although, for simplicity,
@@ -123,7 +123,7 @@ into something that will be functionally similar to this
 
 =head1 METHODS
 
-=head2 dispatch()
+=head2 dispatch(%args)
 
 This is the primary method used during dispatch. Even under mod_perl, the L<handler>
 method uses this under the hood.
@@ -143,7 +143,7 @@ This method accepts the following name value pairs:
 
 =item default
 
-Specify a value to use in place of C<PATH_INFO> if C<PATH_INFO> is not provided.
+Specify a value to use for the path if one is not available.
 This could be the case if the default page is selected (eg: "/" ).
 
 =item prefix
@@ -202,7 +202,7 @@ B<400 Bad Request>
 runmode name (parameter :rm).
 
 B<404 Not Found>
-- When PATH_INFO does not match anything in the L<DISPATCH TABLE>,
+- When the path does not match anything in the L<DISPATCH TABLE>,
 or module could not be found in @INC, or run mode did not exist.
 
 B<500 Internal Server Error>
@@ -325,7 +325,7 @@ sub dispatch {
     %args = map { lc $_ => $args{$_} } keys %args;    # lc for backwards compatability
 
     # get the PATH_INFO
-    my $path_info = $ENV{PATH_INFO};
+    my $path_info = $self->dispatch_path();
 
     # use the 'default' if we need to
     $path_info = $args{default} || '' if(!$path_info || $path_info eq '/');
@@ -402,6 +402,24 @@ sub dispatch {
     return $self->http_error($e, $args{error_document}) if($e);
 
     return $output;
+}
+
+
+=pod
+
+=head2 dispatch_path()
+
+This method returns the path that is to be processed.
+
+By default it returns the value of C<$ENV{PATH_INFO}>
+(or C<< $r->path_info >> under mod_perl) which should work for
+most cases.  It allows the ability for subclasses to override the value if
+they need to do something more specific.
+
+=cut
+
+sub dispatch_path {
+    return $ENV{PATH_INFO};
 }
 
 sub http_error {
@@ -711,7 +729,7 @@ The above example would tell apache that any url beginning with /app will be han
 CGI::Application::Dispatch. It also sets the prefix used to create the application module
 to 'MyApp' and it tells CGI::Application::Dispatch that it shouldn't set the run mode
 but that it will be determined by the application module as usual (through the query
-string). It also sets a default application module to be used if there is no C<PATH_INFO>.
+string). It also sets a default application module to be used if there is no path.
 So, a url of C</app/module_name> would create an instance of C<MyApp::Module::Name>.
 
 Using this method will add the C<Apache->request> object to your application's C<PARAMS>
@@ -794,7 +812,7 @@ sub handler : method {
     }
 }
 
-=head2 dispatch_args
+=head2 dispatch_args()
 
 Returns a hashref of args that will be passed to L<dispatch>(). It will return the following
 structure by default.
@@ -829,10 +847,10 @@ sub dispatch_args {
     };
 }
 
-=head2 translate_module_name
+=head2 translate_module_name($input)
 
 This method is used to control how the module name is translated from
-the matching section of the C<PATH_INFO> (see L<"PATH_INFO Parsing">.
+the matching section of the path (see L<"Path Parsing">.
 The main reason that this method exists is so that it can be overridden if it doesn't do
 exactly what you want.
 
@@ -1050,17 +1068,19 @@ For instance, if you want to override L<prefix> for a specific rule, then you ca
 
     'admin/:app/:rm' => { prefix => 'MyApp::Admin' },
 
-=head1 PATH_INFO Parsing
+=head1 Path Parsing
 
 This section will describe how the application module and run mode are determined from
-the C<PATH_INFO> if no L<DISPATCH TABLE> is present, and what options you have to
-customize the process.
+the path if no L<DISPATCH TABLE> is present, and what options you have to
+customize the process.  The value for the path to be parsed is retrieved from
+the L<dispatch_path> method, which by default uses the C<PATH_INFO> environment
+variable.
 
 =head2 Getting the module name
 
-To get the name of the application module the C<PATH_INFO> is split on backslahes (C</>).
-The second element of the returned list is used to create the application module. So if we
-have a path info of
+To get the name of the application module the path is split on backslahes (C</>).
+The second element of the returned list (the first is empty) is used to create the application module. So if we
+have a path of
 
     /module_name/mode1
 
@@ -1069,16 +1089,16 @@ method. Then if there is a C<prefix> (and there should always be a L<prefix>) it
 to the beginning of this new module name with a double colon C<::> separating the two.
 
 If you don't like the exact way that this is done, don't fret you do have a couple of options.
-First, you can specify a L<DISPATCH TABLE> which is much more powerfule and flexible (in fact
+First, you can specify a L<DISPATCH TABLE> which is much more powerful and flexible (in fact
 this default behavior is actually implemented internally with a dispatch table).
 Or if you want something a little simpler, you can simply subclass and extend the
 L<translate_module_name> method.
 
 =head2 Getting the run mode
 
-Just like the module name is retrieved from splitting the C<PATH_INFO> on slashes, so is the
+Just like the module name is retrieved from splitting the path on slashes, so is the
 run mode. Only instead of using the second element of the resulting list, we use the third
-as the run mode. So, using the same example, if we have a path info of
+as the run mode. So, using the same example, if we have a path of
 
     /module_name/mode2
 

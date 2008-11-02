@@ -1,5 +1,8 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
+2.14 Nov 1, 2008
+    - New feature: $ENV{PATH_INFO} is now abstracted through dispatch_path(). (RT#34069, Bradley Bailey) 
+
 2.13 Sep 16, 2008
     - Fixing various install issues by having a dumber Makefile.PL and Build.PL
       (#37859, Thanks to lkundrak)

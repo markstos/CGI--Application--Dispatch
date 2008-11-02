@@ -28,6 +28,15 @@ my $junk;
 
 }
 
+BEGIN { $COUNT += 1 }
+
+# make sure that dispatch_path() is returning PATH_INFO
+{
+    local $ENV{PATH_INFO} = '/test/dispatch_path/';
+    is(CGI::Application::Dispatch->dispatch_path, '/test/dispatch_path/',
+       '->dispatch_path() is returning PATH_INFO');
+}
+
 BEGIN { $COUNT += 2 }
 
 # module name

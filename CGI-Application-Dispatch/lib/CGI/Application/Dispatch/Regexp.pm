@@ -29,7 +29,7 @@ CGI::Application::Dispatch::Regexp -  Dispatch requests to CGI::Application base
 
 L<CGI::Application::Dispatch> uses its own syntax dispatch table.
 C<CGI::Application::Dispatch::Regexp> allows to use flexible and powerful Perl
-regular expressions to transform PATH_INFO into argument list.
+regular expressions to transform a path into argument list.
 
 =head1 DISPATCH TABLE
 
