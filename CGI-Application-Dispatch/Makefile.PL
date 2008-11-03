@@ -5,8 +5,8 @@ eval "require Apache::Test";
 unless( $@ ) {
     require Apache::TestMM;
     Apache::TestMM->import(qw(test clean));
-    Apache::TestMM::filter_args();
-    Apache::TestMM::generate_script('t/TEST');
+#    Apache::TestMM::filter_args();
+#    Apache::TestMM::generate_script('t/TEST');
     $have_apache_test = 1;
 }
 

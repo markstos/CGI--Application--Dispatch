@@ -1,7 +1,10 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
-2.14 Nov 1, 2008
+2.14 Nov 2, 2008
     - New feature: $ENV{PATH_INFO} is now abstracted through dispatch_path(). (RT#34069, Bradley Bailey) 
+    - Attempted fix for "Couldn't open t/TEST.PL" error, RT#39793. Add comments to that ticket
+      if you still have "make test" problems with Apache::Test. (Puneet Kishor, Kevin, Mark Stosberg) 
+      http://rt.cpan.org/Public/Bug/Display.html?id=39793
 
 2.13 Sep 16, 2008
     - Fixing various install issues by having a dumber Makefile.PL and Build.PL
