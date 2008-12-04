@@ -4,7 +4,7 @@ use warnings;
 use Carp qw(carp cluck);
 use Exception::Class::TryCatch qw(catch);
 
-our $VERSION = '2.14';
+our $VERSION = '2.15';
 our $DEBUG   = 0;
 
 BEGIN {
