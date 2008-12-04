@@ -1,5 +1,9 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
+2.15 Dec 4, 2008
+    - Logging improvement: Quit duplicating $ENV{REQUEST_URI} for Not Found requests (Mark Stosberg)
+    - Logging improvement: Remove stray "'" character (Mark Stosberg)
+
 2.14 Nov 2, 2008
     - New feature: $ENV{PATH_INFO} is now abstracted through dispatch_path(). (RT#34069, Bradley Bailey) 
     - Attempted fix for "Couldn't open t/TEST.PL" error, RT#39793. Add comments to that ticket

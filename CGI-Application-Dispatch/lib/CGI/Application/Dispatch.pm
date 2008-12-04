@@ -340,8 +340,7 @@ sub dispatch {
     my $named_args;
     eval {
         $named_args = $self->_parse_path($path_info, $args{table})
-          or throw_not_found(
-            "Resource not found " . ($ENV{REQUEST_URI} ? "for '$ENV{REQUEST_URI}'" : ''));
+          or throw_not_found("Resource not found");
     };
     my $e = catch();
     return $self->http_error($e, $args{error_document}) if($e);
@@ -426,7 +425,7 @@ sub http_error {
     my ($self, $e, $errdoc) = @_;
 
     warn '[Dispatch] ERROR'
-      . ($ENV{REQUEST_URI} ? "' for request '$ENV{REQUEST_URI}': " : ': ')
+      . ($ENV{REQUEST_URI} ? " for request '$ENV{REQUEST_URI}': " : ': ')
       . $e->error . "\n";
 
     my $errno =
