@@ -2,6 +2,9 @@ Revision history for Perl extension CGI::Application::Dispatch.
 
     - Fix: "$app->run() error handler breaks exception objects." RT#43340 (dekimsey)
     - Documentation improvements (Dave Baker, thinc)
+    - remove "Makefile.PL", which appears to related to some test failures. Build.PL
+      seems to work reliably. If removing Makefile.PL is a problem for you, maybe you have
+      a better solution to RT#39793: https://rt.cpan.org/Ticket/Display.html?id=39793
 
 2.15 Dec 4, 2008
     - Logging improvement: Quit duplicating $ENV{REQUEST_URI} for Not Found requests (Mark Stosberg)
