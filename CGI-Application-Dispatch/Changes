@@ -1,6 +1,7 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
     - Fix: "$app->run() error handler breaks exception objects." RT#43340 (dekimsey)
+    - Documentation improvements (Dave Baker, thinc)
 
 2.15 Dec 4, 2008
     - Logging improvement: Quit duplicating $ENV{REQUEST_URI} for Not Found requests (Mark Stosberg)

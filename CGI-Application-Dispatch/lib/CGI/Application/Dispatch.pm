@@ -54,17 +54,21 @@ CGI::Application::Dispatch - Dispatch requests to CGI::Application based objects
 
 =head2 Out of Box
 
-Under mod_perl
+Under mod_perl:
 
     <Location /app>
         SetHandler perl-script
         PerlHandler CGI::Application::Dispatch
     </Location>
 
-Under normal cgi
+Under normal cgi:
+
+This would be the instance script for your application, such
+as /cgi-bin/dispatch.cgi:
 
     #!/usr/bin/perl
-    use strict;
+    use FindBin '$Bin';
+    use lib "$Bin/../../rel/path/to/my/perllib";
     use CGI::Application::Dispatch;
     CGI::Application::Dispatch->dispatch();
 
@@ -84,17 +88,21 @@ Under normal cgi
         };
     }
 
-Under mod_perl
+Under mod_perl:
 
     <Location /app>
         SetHandler perl-script
         PerlHandler MyApp::Dispatch
     </Location>
 
-Under normal cgi
+Under normal cgi:
+
+This would be the instance script for your application, such
+as /cgi-bin/dispatch.cgi:
 
     #!/usr/bin/perl
-    use strict;
+    use FindBin '$Bin';
+    use lib "$Bin/../../rel/path/to/my/perllib";
     use MyApp::Dispatch;
     MyApp::Dispatch->dispatch();
 
@@ -102,7 +110,7 @@ Under normal cgi
 
 This module provides a way (as a mod_perl handler or running under vanilla CGI) to look at
 the path (as returned by L<dispatch_path>) of the incoming request, parse
-off the desired module and it's run mode, create an instance of that module and run it.
+off the desired module and its run mode, create an instance of that module and run it.
 
 It currently supports both generations of mod_perl (1.x and 2.x). Although, for simplicity,
 all examples involving Apache configuration and mod_perl code will be shown using mod_perl 1.x.
@@ -166,7 +174,7 @@ This is a hash of arguments that are passed into the C<new()> constructor of the
 In most cases, simply using Dispatch with the C<default> and C<prefix> is enough
 to simplify your application and your URLs, but there are many cases where you want
 more power. Enter the dispatch table. Since this table can be slightly complicated,
-a whole section exists on it's use. Please see the L<DISPATCH TABLE> section.
+a whole section exists on its use. Please see the L<DISPATCH TABLE> section.
 
 =item debug
 
@@ -858,12 +866,12 @@ The following transformations are performed on the input:
 =over
 
 =item The text is split on '_'s (underscores)
-and each word has it's first letter capitalized. The words are then joined
+and each word has its first letter capitalized. The words are then joined
 back together and each instance of an underscore is replaced by '::'.
 
 
 =item The text is split on '-'s (hyphens)
-and each word has it's first letter capitalized. The words are then joined
+and each word has its first letter capitalized. The words are then joined
 back together and each instance of a hyphen removed.
 
 =back
@@ -948,7 +956,7 @@ Sometimes it's easiest to explain with an example, so here you go:
     ]
   );
 
-So first, this call to L<dispatch> set's the L<prefix> and passes a C<TMPL_PATH>
+So first, this call to L<dispatch> sets the L<prefix> and passes a C<TMPL_PATH>
 into L<args_to_new>. Next it sets the L<table>.
 
 
@@ -1138,22 +1146,11 @@ If you have problems with mod_rewrite, turn on debugging to see exactly what's h
 =head2 mod_rewrite related code in the dispatch script.
 
 This seemed necessary to put in the dispatch script to make mod_rewrite happy.
-Perhaps it's specific to using C<RewriteBase>. Refactorings welcome!
+Perhaps it's specific to using C<RewriteBase>. 
 
   # mod_rewrite alters the PATH_INFO by turning it into a file system path,
   # so we repair it.
-  use FindBin qw/$Bin/;
-  use Cwd 'abs_path';
-  chdir $Bin;
-  # Location of the www root in relation to the dispatcher. (Adjust as needed!)
-  my $www = abs_path("../");
-  # fix /home versus /usr/home difference
-  $www =~ s{/usr}{};
-
-  # the final removal of the file system stuff mod_rewrite added.
-  # PATH_INFO won't defined if "/" is requested.
-  $ENV{PATH_INFO} =~ s/^$www//g if defined $ENV{PATH_INFO};
-
+  $ENV{PATH_INFO} =~ s/^$ENV{DOCUMENT_ROOT}// if defined $ENV{PATH_INFO};
 
 =head2 Simple Apache Example
 
