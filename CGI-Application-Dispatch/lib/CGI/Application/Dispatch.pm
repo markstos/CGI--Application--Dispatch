@@ -699,7 +699,7 @@ sub _run_app {
     if($@) {
 
         # catch invalid run-mode stuff
-        if($@ =~ /No such run mode/) {
+        if(not ref $@ and  $@ =~ /No such run mode/) {
             throw_not_found("RM '$rm' not found")
 
               # otherwise, just pass it up the chain
