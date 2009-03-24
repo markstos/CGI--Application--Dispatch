@@ -2,7 +2,6 @@ Build.PL
 Changes
 lib/CGI/Application/Dispatch.pm
 lib/CGI/Application/Dispatch/Regexp.pm
-Makefile.PL
 MANIFEST
 META.yml
 t/cgi.t
