@@ -4,7 +4,7 @@ use warnings;
 use Carp qw(carp cluck);
 use Exception::Class::TryCatch qw(catch);
 
-our $VERSION = '2.16';
+our $VERSION = '2.17';
 our $DEBUG   = 0;
 
 BEGIN {
@@ -951,7 +951,7 @@ Sometimes it's easiest to explain with an example, so here you go:
         'date/:year/:month?/:day?' => {
             app         => 'Blog',
             rm          => 'by_date',
-            args_to_new => { TMPL_PATH = "events/" },
+            args_to_new => { TMPL_PATH => "events/" },
         },
     ]
   );

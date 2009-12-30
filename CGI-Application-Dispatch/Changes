@@ -1,7 +1,10 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
+2.17 Dec 30, 2009
+
     - Update examples to use FindBin::Real instead of FindBin, since FindBin is not 
       fully mod_perl compatible. (Mark Stosberg)
+    - Fix typo in POD (Alexander Becker) 
 
 2.16 Mar 23, 2009
     - Fix: "$app->run() error handler breaks exception objects." RT#43340 (dekimsey)
