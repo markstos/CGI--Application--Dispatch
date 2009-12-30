@@ -67,8 +67,8 @@ This would be the instance script for your application, such
 as /cgi-bin/dispatch.cgi:
 
     #!/usr/bin/perl
-    use FindBin '$Bin';
-    use lib "$Bin/../../rel/path/to/my/perllib";
+    use FindBin::Real 'Bin';
+    use lib Bin() . '/../../rel/path/to/my/perllib';
     use CGI::Application::Dispatch;
     CGI::Application::Dispatch->dispatch();
 
@@ -101,8 +101,8 @@ This would be the instance script for your application, such
 as /cgi-bin/dispatch.cgi:
 
     #!/usr/bin/perl
-    use FindBin '$Bin';
-    use lib "$Bin/../../rel/path/to/my/perllib";
+    use FindBin::Real 'Bin';
+    use lib Bin() . '/../../rel/path/to/my/perllib';
     use MyApp::Dispatch;
     MyApp::Dispatch->dispatch();
 
