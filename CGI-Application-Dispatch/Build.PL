@@ -12,6 +12,9 @@ my $build = $build_pkg->new(
     license     => 'perl',
     requires    => {
         'perl'                       => '5.6.0',
+        # a new 'version' is only required to solve rare install problem.
+        # https://rt.cpan.org/Ticket/Display.html?id=56283
+        'version'                    => 0.82, 
         'CGI::Application'           => '3.2',
         'Exception::Class'           => 0,
         'Exception::Class::TryCatch' => 0,

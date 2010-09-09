@@ -1,5 +1,9 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
+2.18 Sep 9, 2010
+    - Update Build.PL to require a newer version of "version", to address
+      a rare installation problem. (RT#56283) Thanks to Jim Brandt and others.
+
 2.17 Dec 30, 2009
 
     - Update examples to use FindBin::Real instead of FindBin, since FindBin is not 
