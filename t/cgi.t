@@ -127,7 +127,7 @@ BEGIN { $COUNT += 2 }
     $output = CGI::Application::Dispatch->dispatch();
     like($output, qr/Not Found/i);
 
-    # no a valid path_info
+    # not a valid path_info
     local $ENV{PATH_INFO} = '//';
     $output = CGI::Application::Dispatch->dispatch();
     like($output, qr/Internal Server Error/i);

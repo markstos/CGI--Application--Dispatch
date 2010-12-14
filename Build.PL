@@ -15,9 +15,10 @@ my $build = $build_pkg->new(
         # a new 'version' is only required to solve rare install problem.
         # https://rt.cpan.org/Ticket/Display.html?id=56283
         'version'                    => 0.82, 
-        'CGI::Application'           => '3.2',
-        'Exception::Class'           => 0,
-        'Exception::Class::TryCatch' => 0,
+        'CGI::Application'           => '5.0', # For native PSGI support. 
+        'HTTP::Exception'            => 0,
+        'Try::Tiny'                  => 0,  
+        'Plack'                      => 0.9956, # For Plack::Test,
     },
     build_requires => {
         'Test::More'       => 0,
