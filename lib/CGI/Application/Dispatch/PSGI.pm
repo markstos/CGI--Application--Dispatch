@@ -5,9 +5,8 @@ use Carp qw(carp cluck);
 use HTTP::Exception;
 use Try::Tiny;
 
-our $VERSION = '2.18';
+our $VERSION = '3.00';
 our $DEBUG   = 0;
-
 
 =pod
 
@@ -20,8 +19,8 @@ CGI::Application::Dispatch::PSGI - Dispatch requests to CGI::Application based o
 =head2 Out of Box
 
 Under mod_perl:
-   
-  # change "Apache1" to "Apache2" as needed. 
+
+  # change "Apache1" to "Apache2" as needed.
 
   <Location />
   SetHandler perl-script
@@ -40,7 +39,7 @@ This would be the instance script for your application, such
 as /cgi-bin/dispatch.cgi:
 
     ### in your dispatch.psgi:
-    # ( in a persistent environment, use FindBin::Real instead. ) 
+    # ( in a persistent environment, use FindBin::Real instead. )
     use FindBin 'Bin';
     use lib "$Bin/../perllib';
     use Your::Application::Dispatch;
@@ -71,7 +70,7 @@ The C<< .psgi >> file is constructed as above.
 
 =head1 DESCRIPTION
 
-This module provides a way to look at the path (as returned by 
+This module provides a way to look at the path (as returned by
 C<< $env->{PATH_INFO} >>) of the incoming request, parse off the desired module and
 its run mode, create an instance of that module and run it.
 
@@ -89,10 +88,6 @@ into something that will be functionally similar to this
     $app->mode_param(sub {'run_mode'}); #this will set the run mode
 
 =head1 METHODS
-
-=head2 as_psgi(%args)
-
-XXX TODO
 
 =cut
 
@@ -165,7 +160,7 @@ sub as_psgi {
             or $_ eq 'table'
             or $_ eq 'auto_rest'
             or $_ eq 'auto_rest_lc');
-        die "Passing extra args ('$_') to dispatch() is not supported! Did you mean to use 'args_to_new' ?";
+        die "Passing extra args ('$_') to as_psgi() is not supported! Did you mean to use 'args_to_new' ?";
         $args{args_to_new}->{$_} = delete $args{$_};
     }
 
@@ -257,7 +252,7 @@ sub as_psgi {
 
 =head2 as_psgi(%args)
 
-This is the primary method used during dispatch. 
+This is the primary method used during dispatch.
 
     #!/usr/bin/perl
     use strict;
@@ -450,7 +445,7 @@ sub _run_app {
         $app->mode_param(sub { return $rm }) if($rm);
         return $app->run_as_psgi;
     }
-    catch { 
+    catch {
         # catch invalid run-mode stuff
         if(not ref $_ and  $_ =~ /No such run mode/) {
             HTTP::Exception->throw(404, status_message => "RM '$rm' not found");
@@ -460,106 +455,6 @@ sub _run_app {
             HTTP::Exception->throw(500, status_message => "Unknown error: $_");
         }
     };
-}
-
-=head2 handler()
-
-This method is used so that this module can be run as a mod_perl handler.
-When it creates the application module it passes the $r argument into the PARAMS
-hash of new()
-
-    <Location /app>
-        SetHandler perl-script
-        PerlHandler CGI::Application::Dispatch
-        PerlSetVar  CGIAPP_DISPATCH_PREFIX  MyApp
-        PerlSetVar  CGIAPP_DISPATCH_DEFAULT /module_name
-    </Location>
-
-The above example would tell apache that any url beginning with /app will be handled by
-CGI::Application::Dispatch. It also sets the prefix used to create the application module
-to 'MyApp' and it tells CGI::Application::Dispatch that it shouldn't set the run mode
-but that it will be determined by the application module as usual (through the query
-string). It also sets a default application module to be used if there is no path.
-So, a url of C</app/module_name> would create an instance of C<MyApp::Module::Name>.
-
-Using this method will add the C<Apache->request> object to your application's C<PARAMS>
-as 'r'.
-
-    # inside your app
-    my $request = $self->param('r');
-
-If you need more customization than can be accomplished with just L<prefix>
-and L<default>, then it would be best to just subclass CGI::Application::Dispatch
-and override L<dispatch_args> since C<handler()> uses L<dispatch> to do the heavy lifting.
-
-    package MyApp::Dispatch;
-    use base 'CGI::Application::Dispatch';
-
-    sub dispatch_args {
-        return {
-            prefix  => 'MyApp',
-            table   => [
-                ''                => { app => 'Welcome', rm => 'start' },
-                ':app/:rm'        => { },
-                'admin/:app/:rm'  => { prefix   => 'MyApp::Admin' },
-            ],
-            args_to_new => {
-                PARAMS => {
-                    foo => 'bar',
-                    baz => 'bam',
-                },
-            }
-        };
-    }
-
-    1;
-
-And then in your httpd.conf
-
-    <Location /app>
-        SetHandler perl-script
-        PerlHandler MyApp::Dispatch
-    </Location>
-
-=cut
-
-sub handler : method {
-    my ($self, $r) = @_;
-
-    # set the PATH_INFO
-    $ENV{PATH_INFO} = $r->path_info();
-
-    # setup our args to dispatch()
-    my %args;
-    my $config_args = $r->dir_config();
-    for my $var qw(DEFAULT PREFIX ERROR_DOCUMENT) {
-        my $dir_var = "CGIAPP_DISPATCH_$var";
-        $args{lc($var)} = $config_args->{$dir_var}
-          if($config_args->{$dir_var});
-    }
-
-    # add $r to the args_to_new's PARAMS
-    $args{args_to_new}->{PARAMS}->{r} = $r;
-
-    # set debug if we need to
-    $DEBUG = 1 if($config_args->{CGIAPP_DISPATCH_DEBUG});
-    if($DEBUG) {
-        require Data::Dumper;
-        warn "[Dispatch] Calling dispatch() with the following arguments: "
-          . Data::Dumper::Dumper(\%args) . "\n";
-    }
-
-    $self->dispatch(%args);
-
-    if($r->status == 404) {
-        return NOT_FOUND();
-    } elsif($r->status == 500) {
-        return SERVER_ERROR();
-    } elsif($r->status == 400) {
-        return IS_MODPERL2() ? HTTP_BAD_REQUEST() : BAD_REQUEST();
-    } else {
-        return OK();
-    }
 }
 
 =head2 dispatch_args()
@@ -638,13 +533,13 @@ sub translate_module_name {
 
 =head2 require_module($module_name)
 
-This class method is used internally by CGI::Application::Dispatch to take a module
+This class method is used internally to take a module
 name (supplied by L<get_module_name>) and require it in a secure fashion. It
 is provided as a public class method so that if you override other functionality of
 this module, you can still safely require user specified modules. If there are
 any problems requiring the named module, then we will C<croak>.
 
-    CGI::Application::Dispatch->require_module('MyApp::Module::Name');
+    CGI::Application::Dispatch::PSGI->require_module('MyApp::Module::Name');
 
 =cut
 
@@ -683,7 +578,7 @@ __END__
 
 Sometimes it's easiest to explain with an example, so here you go:
 
-  CGI::Application::Dispatch->dispatch(
+  CGI::Application::Dispatch::PSGI->as_psgi(
     prefix      => 'MyApp',
     args_to_new => {
         TMPL_PATH => 'myapp/templates'
@@ -700,7 +595,7 @@ Sometimes it's easiest to explain with an example, so here you go:
     ]
   );
 
-So first, this call to L<dispatch> sets the L<prefix> and passes a C<TMPL_PATH>
+So first, this call to L<as_psgi> sets the L<prefix> and passes a C<TMPL_PATH>
 into L<args_to_new>. Next it sets the L<table>.
 
 
@@ -863,7 +758,7 @@ Then the string 'mode2' is used as the run mode.
 CGI query strings are unaffected by the use of C<PATH_INFO> to obtain the module name and run mode.
 This means that any other modules you use to get access to you query argument (ie, L<CGI>,
 L<Apache::Request>) should not be affected. But, since the run mode may be determined by
-CGI::Application::Dispatch having a query argument named 'rm' will be ignored by your application
+CGI::Application::Dispatch::PSGI having a query argument named 'rm' will be ignored by your application
 module.
 
 =back
@@ -889,7 +784,7 @@ If you have problems with mod_rewrite, turn on debugging to see exactly what's h
 =head2 mod_rewrite related code in the dispatch script.
 
 This seemed necessary to put in the dispatch script to make mod_rewrite happy.
-Perhaps it's specific to using C<RewriteBase>. 
+Perhaps it's specific to using C<RewriteBase>.
 
   # mod_rewrite alters the PATH_INFO by turning it into a file system path,
   # so we repair it.
@@ -971,11 +866,11 @@ it.
 #subclass of Dispatch does not break with a new release, they are documented here and are considered
 #to be part of the API and will not be changed without very good reasons.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Michael Peters <mpeters@plusthree.com>
+Mark Stosberg <mark@summersault.com>
 
-Thanks to Plus Three, LP (http://www.plusthree.com) for sponsoring my work on this module
+Heavily based on CGI::Application::Dispatch, written by Michael Peters <mpeters@plusthree.com> and others
 
 =head1 COMMUNITY
 
@@ -988,50 +883,22 @@ L<http://www.cgi-app.org/>
 
 A public source code repository for this project is hosted here:
 
-http://code.google.com/p/cgi-app-modules/source/checkout
-
-=head1 CONTRIBUTORS
-
-
-=over
-
-=item * Shawn Sorichetti
-
-=item * Timothy Appnel
-
-=item * dsteinbrunner
-
-=item * ZACKSE
-
-=item * Stew Heckenberg
-
-=item * Drew Taylor <drew@drewtaylor.com>
-
-=item * James Freeman <james.freeman@smartsurf.org>
-
-=item * Michael Graham <magog@the-wire.com>
-
-=item * Cees Hek <ceeshek@gmail.com>
-
-=item * Mark Stosberg <mark@summersault.com>
-
-=item * Viacheslav Sheveliov <slavash@aha.ru>
-
-=back
+https://github.com/markstos/CGI--Application--Dispatch
 
 =head1 SECURITY
 
-Since C::A::Dispatch will dynamically choose which modules to use as the content generators,
-it may give someone the ability to execute random modules on your system if those modules can
-be found in you path. Of course those modules would have to behave like L<CGI::Application> based
-modules, but that still opens up the door more than most want. This should only be a problem
-if you don't use a L<prefix>. By using this option you are only allowing Dispatch to pick from
-a namespace of modules to run.
+Since C::A::Dispatch::PSGI will dynamically choose which modules to use as the
+content generators, it may give someone the ability to execute random modules
+on your system if those modules can be found in you path. Of course those
+modules would have to behave like L<CGI::Application> based modules, but that
+still opens up the door more than most want. This should only be a problem if
+you don't use a L<prefix>. By using this option you are only allowing Dispatch
+to pick from a namespace of modules to run.
 
 =head1 Backwards Compatibility
 
-Versions 0.2 and earlier of this module injected the "as_psgi" method into CGI::Application::Dispatch,
-creating a syntax like this:
+Versions 0.2 and earlier of this module injected the "as_psgi" method into
+CGI::Application::Dispatch, creating a syntax like this:
 
    ### in your dispatch.psgi:
    use Your::Application::Dispatch;
@@ -1039,7 +906,7 @@ creating a syntax like this:
    Your::Application::Dispatch->as_psgi;
 
    ### In Your::Application::Dispatch;
-   use base 'CGI::Application::Dispatch';
+   use base 'CGI::Application::Dispatch::PSGI';
 
 In the current design, the C<< as_pgsi >> method is directly in this module, so
 a couple of lines of code need to be changed:
@@ -1052,28 +919,32 @@ a couple of lines of code need to be changed:
    use base 'CGI::Application::Dispatch::PSGI';
 
 
-
-    
-
-
-
 =head1 Differences with CGI::Application::Dispatch
 
 =over 4
 
-=item error_document argument
+=item new() - error_document argument
 
 Specifiying error documents internally is no longer supported. Use the L<Plack::Middleware::ErrorDocument>
 or another PSGI solution instead.
 
-=item dispatch() method
+=item dispatch()
 
 Use C<< as_psgi() >> instead.
 
-=item dispatch_path() method
+=item dispatch_path()
 
 The dispatch_path() method is not supported. The alternative is to reference C<< $env->{PATH_INFO} >> which is
 available per the PSGI spec.
+
+=item handler()
+
+This provided an Apache-specific handler. Other PSGI components like L<Plack::Handler::Apache2> provide
+Apache handlers now instead.
+
+=item _http_method()
+
+This method has been eliminated. Check C<< $env->{REQUEST_METHOD} >> directly instead.
 
 =item _parse_path()
 
@@ -1082,10 +953,6 @@ The private _parse_path() method now accepts an additional argument, the PSGI C<
 =item _run_app()
 
 The private _run_app() method now accepts an additional argument, the PSGI C<< $env >> hash.
-
-=item _http_method()
-
-This method has been eliminated. Check C<< $env->{REQUEST_METHOD} >> directly instead.
 
 =item _r()
 
