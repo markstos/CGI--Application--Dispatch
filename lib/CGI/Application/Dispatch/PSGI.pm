@@ -923,14 +923,12 @@ a couple of lines of code need to be changed:
 
 =over 4
 
-=item new() - error_document argument
-
-Specifiying error documents internally is no longer supported. Use the L<Plack::Middleware::ErrorDocument>
-or another PSGI solution instead.
-
 =item dispatch()
 
 Use C<< as_psgi() >> instead.
+
+Note that the C<error_document> key is not supported here. Use the
+L<Plack::Middleware::ErrorDocument> or another PSGI solution instead.
 
 =item dispatch_path()
 
