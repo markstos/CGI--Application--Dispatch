@@ -241,6 +241,7 @@ sub as_psgi {
             $psgi_app =  $self->_run_app($module, $rm, $local_args_to_new,$env);
         };
         if (my $e = HTTP::Exception->caught) {
+            # XXX I think this is a bug, because http_error returns HTML, not a PSGI app.
             return $self->http_error($e);
         }
         elsif ($e = Exception::Class->caught) {
