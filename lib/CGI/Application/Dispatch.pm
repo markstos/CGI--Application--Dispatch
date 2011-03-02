@@ -307,7 +307,7 @@ sub dispatch {
     $DEBUG = $args{debug} ? 1 : 0;
 
     # check for extra args (for backwards compatibility)
-    foreach(keys %args) {
+    for (keys %args) {
         next
           if(  $_ eq 'prefix'
             or $_ eq 'default'
