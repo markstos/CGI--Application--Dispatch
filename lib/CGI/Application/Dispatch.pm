@@ -253,7 +253,7 @@ sub dispatch {
 
     # merge dispatch_args() and %args with %args taking precendence
     my $dispatch_args = $self->dispatch_args(\%args);
-    foreach my $arg (keys %$dispatch_args) {
+    for my $arg (keys %$dispatch_args) {
 
         # args_to_new should be merged
         if($arg eq 'args_to_new') {
@@ -789,7 +789,7 @@ sub handler : method {
     # setup our args to dispatch()
     my %args;
     my $config_args = $r->dir_config();
-    foreach my $var qw(DEFAULT PREFIX ERROR_DOCUMENT) {
+    for my $var qw(DEFAULT PREFIX ERROR_DOCUMENT) {
         my $dir_var = "CGIAPP_DISPATCH_$var";
         $args{lc($var)} = $config_args->{$dir_var}
           if($config_args->{$dir_var});
