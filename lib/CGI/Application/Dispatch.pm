@@ -317,6 +317,7 @@ sub dispatch {
             or $_ eq 'table'
             or $_ eq 'auto_rest'
             or $_ eq 'auto_rest_lc'
+            or $_ eq 'auto_rest_tunneling'
             or $_ eq 'not_found'
             or $_ eq 'error_document');
         carp "Passing extra args ('$_') to dispatch() is deprecated! Please use 'args_to_new'";
@@ -395,9 +396,23 @@ sub dispatch {
               defined $named_args->{auto_rest_lc}
               ? $named_args->{auto_rest_lc}
               : $args{auto_rest_lc};
+            my $tunneling =
+              defined $named_args->{auto_rest_tunneling}
+              ? $named_args->{auto_rest_tunneling}
+              : $args{auto_rest_tunneling};
             my $http_method = $self->_http_method;
-            $http_method = lc $http_method if $method_lc;
-            $rm .= "_$http_method";
+            if($tunneling && $http_method eq 'POST') {
+                $rm = sub {
+                    my $self = shift;
+                    my $rest_method = $self->query->param('_method') ||
+                    'POST';
+                    $rest_method = lc $rest_method if $method_lc;
+                    return $rm.'_'.$rest_method;
+                };
+            } else {
+                $http_method = lc $http_method if $method_lc;
+                $rm .= "_$http_method";
+            }
         }
 
         # load and run the module
@@ -687,8 +702,7 @@ sub _run_app {
         warn "[Dispatch] Final args to pass to new(): " . Data::Dumper::Dumper($args) . "\n";
     }
 
-    if($rm) {
-
+    if($rm && ref($rm) ne 'CODE') {
         # check runmode name
         ($rm) = ($rm =~ /^([a-zA-Z_][\w']+)$/);
         throw_bad_request("Invalid characters in runmode name") unless $rm;
@@ -700,7 +714,9 @@ sub _run_app {
     my $output;
     eval {
         my $app = ref($args) eq 'HASH' ? $module->new($args) : $module->new();
-        $app->mode_param(sub { return $rm }) if($rm);
+        if ($rm) {
+            $app->mode_param( ref($rm) eq 'CODE' ? $rm : sub { return $rm } );
+        }
         $output = $app->run();
     };
 
