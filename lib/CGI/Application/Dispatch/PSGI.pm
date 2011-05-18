@@ -68,6 +68,24 @@ as /cgi-bin/dispatch.cgi:
 
 The C<< .psgi >> file is constructed as above.
 
+=head2 With a custom query object
+
+If you want to supply your own PSGI object, something like this in your .psgi file will work:
+
+    sub {
+        my $env = shift;
+        my $app = CGI::Application::Dispatch::PSGI->as_psgi(
+            table => [
+                '/:rm'    =>    { app => 'TestApp' }
+            ],
+            args_to_new => {
+                QUERY    => CGI::PSGI->new($env)
+            }
+        );
+        return $app->($env);
+    }
+
+
 =head1 DESCRIPTION
 
 This module provides a way to look at the path (as returned by
