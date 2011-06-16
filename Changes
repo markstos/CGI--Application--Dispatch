@@ -1,5 +1,33 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
+3.00 Jun 16, 2011
+    [FEATURES] 
+    - PSGI support is improved. CGI::Application::Dispatch is now been
+      rewritten and is included in this distribution. It is no longer a
+      wrapper around the older dispatcher, but is completely PSGI-native.
+      Performance should be improved a bit as well. 
+     
+    [THINGS THAT MIGHT BREAK YOUR CODE]
+    As part of the significant update to PSGI support, you'll need to update a
+    couple lines of code in your "dispatch.cgi" script if you were using an
+    older version of CGI::Application::Dispatch::PSGI. See the section on
+    "Backwards Compatibility" in that documentation.
+
+    [INTERNALS]
+    - CGI::Application 4.5 is now required for the newer native PSGI support.
+
+    - Exceptions in CGI::Application::Dispatch::PSGI are now handled with
+      HTTP::Exception.  This in turn depends on HTTP::Status, which is
+      currently in a distribution which depends on HTML::Parser, which depends
+      having a C-compiler available. I don't consider this ideal, as I'd like
+      to be able to support the easy installation of a pure-Perl
+      CGI::Application stack. This could possibly be addressed in the future by
+      removing the false dependency on a C-compiler from HTTP::Status, or we
+      could return to use Exception::Class directly for exception handling.
+
+      The except format of the default thrown exceptions may change in the
+      future.
+
 2.18 Sep 9, 2010
     - Update Build.PL to require a newer version of "version", to address
       a rare installation problem. (RT#56283) Thanks to Jim Brandt and others.

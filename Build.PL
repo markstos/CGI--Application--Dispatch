@@ -14,15 +14,16 @@ my $build = $build_pkg->new(
         'perl'                       => '5.6.0',
         # a new 'version' is only required to solve rare install problem.
         # https://rt.cpan.org/Ticket/Display.html?id=56283
-        'version'                    => 0.82, 
-        'CGI::Application'           => '4.50', # For native PSGI support. 
+        'version'                    => 0.82,
+        'CGI::Application'           => '4.50', # For native PSGI support.
         'HTTP::Exception'            => 0,
-        'Try::Tiny'                  => 0,  
-        'Plack'                      => 0.9956, # For Plack::Test,
+        'Exception::Class::TryCatch' => 0,
+        'Try::Tiny'                  => 0,
     },
     build_requires => {
         'Test::More'       => 0,
         'Test::LongString' => 0,
+        'Plack'            => 0.9956, # For Plack::Test,
         $have_apache_test ? ( 'Apache::Test' => 0 ) : (),
     },
 );
