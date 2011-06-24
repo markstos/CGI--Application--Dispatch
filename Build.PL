@@ -17,13 +17,15 @@ my $build = $build_pkg->new(
         'version'                    => 0.82,
         'CGI::Application'           => '4.50', # For native PSGI support.
         'HTTP::Exception'            => 0,
+        'Exception::Class'           => 1.2,
         'Exception::Class::TryCatch' => 0,
         'Try::Tiny'                  => 0,
     },
     build_requires => {
+        'CGI::PSGI'        => 1, # recommended by CGI::Application, but not required. We still need it at least to test with.
         'Test::More'       => 0,
         'Test::LongString' => 0,
-        'Plack'            => 0.9956, # For Plack::Test,
+        'Plack::Test'      => 0.9956,
         $have_apache_test ? ( 'Apache::Test' => 0 ) : (),
     },
 );

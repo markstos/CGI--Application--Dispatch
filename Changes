@@ -1,5 +1,12 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
+3.01 Jun 23, 2011
+    No code changes.
+
+    [INTERNALS]
+    - Fixed Build.PL issue that was causing tests to fail in a lot of environments. (Brad Oaks) 
+    - cleaned up MANIFEST
+
 3.00 Jun 16, 2011
     [FEATURES] 
     - PSGI support is improved. CGI::Application::Dispatch is now been

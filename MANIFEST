@@ -20,4 +20,3 @@ t/lib/MyApp/Module/Bad.pm
 t/lib/MyApp/Module/Name.pm
 t/lib/MyApp/Module/Rest.pm
 t/psgi.t
-TODO
