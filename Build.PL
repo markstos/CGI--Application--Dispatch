@@ -22,7 +22,7 @@ my $build = $build_pkg->new(
         'Try::Tiny'                  => 0,
     },
     build_requires => {
-        'CGI::PSGI'        => 1, # recommended by CGI::Application, but not required. We still need it at least to test with.
+        'CGI::PSGI'        => 0, # recommended by CGI::Application, but not required. We still need it at least to test with.
         'Test::More'       => 0,
         'Test::LongString' => 0,
         'Plack::Test'      => 0.9956,
