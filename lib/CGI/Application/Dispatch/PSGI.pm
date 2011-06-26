@@ -5,7 +5,7 @@ use Carp qw(carp cluck);
 use HTTP::Exception;
 use Try::Tiny;
 
-our $VERSION = '3.00';
+our $VERSION = '3.03';
 our $DEBUG   = 0;
 
 =pod

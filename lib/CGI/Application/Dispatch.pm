@@ -4,7 +4,7 @@ use warnings;
 use Carp qw(carp cluck);
 use Exception::Class::TryCatch qw(catch);
 
-our $VERSION = '3.02';
+our $VERSION = '3.03';
 our $DEBUG   = 0;
 
 BEGIN {
@@ -199,7 +199,7 @@ as well. Path of this file should be relative to server DOCUMENT_ROOT.
 B<A URI to which the application will be redirected> - if no leading C<"> or
 C<<> will be found.
 
-Custom messages will be displayed I<in non mod_perl enviroment only>. (Under
+Custom messages will be displayed I<in non mod_perl environment only>. (Under
 mod_perl, please use ErrorDocument directive in Apache configuration files.)
 This value can contain C<%s> placeholder for L<sprintf> Perl function. This
 placeholder will be replaced with numeric HTTP error code. Currently

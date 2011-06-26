@@ -25,7 +25,7 @@ my $build = $build_pkg->new(
         'CGI::PSGI'        => 0, # recommended by CGI::Application, but not required. We still need it at least to test with.
         'Test::More'       => 0,
         'Test::LongString' => 0,
-        'Plack::Test'      => 0.9956,
+        'Plack'      => 0.9956, # really, we just depend on Plack::Test, but Plack::Test has not declared a version.
         $have_apache_test ? ( 'Apache::Test' => 0 ) : (),
     },
 );
