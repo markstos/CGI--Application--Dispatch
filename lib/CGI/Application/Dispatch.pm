@@ -4,7 +4,7 @@ use warnings;
 use Carp qw(carp cluck);
 use Exception::Class::TryCatch qw(catch);
 
-our $VERSION = '2.18';
+our $VERSION = '3.03';
 our $DEBUG   = 0;
 
 BEGIN {
@@ -199,7 +199,7 @@ as well. Path of this file should be relative to server DOCUMENT_ROOT.
 B<A URI to which the application will be redirected> - if no leading C<"> or
 C<<> will be found.
 
-Custom messages will be displayed I<in non mod_perl enviroment only>. (Under
+Custom messages will be displayed I<in non mod_perl environment only>. (Under
 mod_perl, please use ErrorDocument directive in Apache configuration files.)
 This value can contain C<%s> placeholder for L<sprintf> Perl function. This
 placeholder will be replaced with numeric HTTP error code. Currently
@@ -253,7 +253,7 @@ sub dispatch {
 
     # merge dispatch_args() and %args with %args taking precendence
     my $dispatch_args = $self->dispatch_args(\%args);
-    foreach my $arg (keys %$dispatch_args) {
+    for my $arg (keys %$dispatch_args) {
 
         # args_to_new should be merged
         if($arg eq 'args_to_new') {
@@ -307,7 +307,7 @@ sub dispatch {
     $DEBUG = $args{debug} ? 1 : 0;
 
     # check for extra args (for backwards compatibility)
-    foreach(keys %args) {
+    for (keys %args) {
         next
           if(  $_ eq 'prefix'
             or $_ eq 'default'
@@ -805,7 +805,7 @@ sub handler : method {
     # setup our args to dispatch()
     my %args;
     my $config_args = $r->dir_config();
-    foreach my $var qw(DEFAULT PREFIX ERROR_DOCUMENT) {
+    for my $var qw(DEFAULT PREFIX ERROR_DOCUMENT) {
         my $dir_var = "CGIAPP_DISPATCH_$var";
         $args{lc($var)} = $config_args->{$dir_var}
           if($config_args->{$dir_var});

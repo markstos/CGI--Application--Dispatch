@@ -14,14 +14,18 @@ my $build = $build_pkg->new(
         'perl'                       => '5.6.0',
         # a new 'version' is only required to solve rare install problem.
         # https://rt.cpan.org/Ticket/Display.html?id=56283
-        'version'                    => 0.82, 
-        'CGI::Application'           => '3.2',
-        'Exception::Class'           => 0,
+        'version'                    => 0.82,
+        'CGI::Application'           => '4.50', # For native PSGI support.
+        'HTTP::Exception'            => 0,
+        'Exception::Class'           => 1.2,
         'Exception::Class::TryCatch' => 0,
+        'Try::Tiny'                  => 0,
     },
     build_requires => {
+        'CGI::PSGI'        => 0, # recommended by CGI::Application, but not required. We still need it at least to test with.
         'Test::More'       => 0,
         'Test::LongString' => 0,
+        'Plack'      => 0.9956, # really, we just depend on Plack::Test, but Plack::Test has not declared a version.
         $have_apache_test ? ( 'Apache::Test' => 0 ) : (),
     },
 );
