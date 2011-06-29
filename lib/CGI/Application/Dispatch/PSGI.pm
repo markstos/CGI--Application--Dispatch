@@ -5,7 +5,7 @@ use Carp qw(carp cluck);
 use HTTP::Exception;
 use Try::Tiny;
 
-our $VERSION = '3.03';
+our $VERSION = '3.04';
 our $DEBUG   = 0;
 
 =pod
@@ -828,7 +828,7 @@ Perhaps it's specific to using C<RewriteBase>.
 
 Here is a more complex example that dispatches "/", which would otherwise
 be treated as a directory, and also supports multiple developer directories,
-so C</~mark> has its own seperate dispatching system beneath it.
+so C</~mark> has its own separate dispatching system beneath it.
 
 Note that order matters here! The Location block for "/" needs to come before the
 user blocks.

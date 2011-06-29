@@ -1,5 +1,11 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
+3.04 June 29th, 2011
+    No code changes.
+
+    [DOCUMENTATION]
+    - spelling fixes (Nicholas Bamber)
+
 3.03 June 25th, 2011
     No code changes.
 

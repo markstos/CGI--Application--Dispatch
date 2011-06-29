@@ -2,7 +2,7 @@ package CGI::Application::Dispatch::Regexp;
 use strict;
 use base 'CGI::Application::Dispatch';
 
-our $VERSION = '2.13';
+our $VERSION = '3.04';
 
 =pod
 
@@ -28,7 +28,7 @@ CGI::Application::Dispatch::Regexp -  Dispatch requests to CGI::Application base
 =head1 DESCRIPTION
 
 L<CGI::Application::Dispatch> uses its own syntax dispatch table.
-C<CGI::Application::Dispatch::Regexp> allows to use flexible and powerful Perl
+C<CGI::Application::Dispatch::Regexp> allows one to use flexible and powerful Perl
 regular expressions to transform a path into argument list.
 
 =head1 DISPATCH TABLE
