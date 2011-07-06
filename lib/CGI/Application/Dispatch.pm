@@ -235,7 +235,7 @@ Examples of using error_document (assume error 404 have been returned):
 This tells Dispatch that you are using REST by default and that you care about which HTTP method
 is being used. Dispatch will append the HTTP method name (upper case by default) to
 the run mode that is determined after finding the appropriate dispatch rule. So a GET request
-that translates into C<MyApp::Module->foo> will become C<MyApp::Module->foo_GET>.
+that translates into C<MyApp::Module-E<gt>foo> will become C<MyApp::Module-E<gt>foo_GET>.
 
 This can be overridden on a per-rule basis in a custom dispatch table.
 
