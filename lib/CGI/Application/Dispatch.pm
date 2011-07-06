@@ -239,6 +239,14 @@ that translates into C<MyApp::Module-E<gt>foo> will become C<MyApp::Module-E<gt>
 
 This can be overridden on a per-rule basis in a custom dispatch table.
 
+=item auto_rest_tunneling
+
+Used in combination with L<auto_rest>, this tell Dispatch that if the HTTP method is a POST and a C<_mode> param is present, its value is to be used as the HTTP method in resolving the run mode. Effectively C<_mode> needs to be an HTTP method, namely PUT or DELETE. The value of C<_mode> is treated case insenstively. Ifa C<_mode> param is not included with the request it is processed as a POST.
+
+This technique was introduced in Ruby On Rails and later implemented by numerous web frameworks such as Django to support REST despite browsers where PUT and DELETE HTTP method requests are not supported.
+
+The L<auto_rest> option must be enabled otherwise this option is ignored despite its value.
+
 =item auto_rest_lc
 
 In combinaion with L<auto_rest> this tells Dispatch that you prefer lower cased HTTP method names.
