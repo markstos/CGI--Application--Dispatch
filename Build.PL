@@ -18,7 +18,6 @@ my $build = $build_pkg->new(
         'CGI::Application'           => '4.50', # For native PSGI support.
         'HTTP::Exception'            => 0,
         'Exception::Class'           => 1.2,
-        'Exception::Class::TryCatch' => 0,
         'Try::Tiny'                  => 0,
     },
     build_requires => {
