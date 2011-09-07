@@ -2,7 +2,7 @@ package CGI::Application::Dispatch;
 use strict;
 use warnings;
 use Carp qw(carp cluck);
-use Exception::Class::TryCatch qw(catch);
+use Try:Tiny;
 
 our $VERSION = '3.04';
 our $DEBUG   = 0;
@@ -346,12 +346,13 @@ sub dispatch {
 
     # take args from path
     my $named_args;
-    eval {
+    try {
         $named_args = $self->_parse_path($path_info, $args{table})
           or throw_not_found("Resource not found");
+    } catch {
+        $e = Exception::Class‐>caught();
+        return $self->http_error($e, $args{error_document});
     };
-    my $e = catch();
-    return $self->http_error($e, $args{error_document}) if($e);
 
     if($DEBUG) {
         require Data::Dumper;
@@ -365,7 +366,7 @@ sub dispatch {
 
     # eval and catch any exceptions that might be thrown
     my ($output, @final_dispatch_args);
-    eval {
+    try {
         ($module, $local_prefix, $rm, $local_args_to_new) =
           delete @{$named_args}{qw(app prefix rm args_to_new)};
 
@@ -404,10 +405,10 @@ sub dispatch {
         @final_dispatch_args = ($module, $rm, $local_args_to_new);
         $self->require_module($module);
         $output = $self->_run_app($module, $rm, $local_args_to_new);
+    } catch {
+        $e = Exception::Class‐>caught();
+        return $self->http_error($e, $args{error_document});
     };
-    $e = catch();
-    return $self->http_error($e, $args{error_document}) if($e);
-
     return $output;
 }
 
