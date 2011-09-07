@@ -10,6 +10,7 @@ eval "require $build_pkg";
 my $build = $build_pkg->new(
     module_name => 'CGI::Application::Dispatch',
     license     => 'perl',
+    configure_requires => { 'Module::Build' => 0.38 },
     requires    => {
         'perl'                       => '5.6.0',
         # a new 'version' is only required to solve rare install problem.
