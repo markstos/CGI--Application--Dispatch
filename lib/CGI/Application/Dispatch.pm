@@ -4,7 +4,7 @@ use warnings;
 use Carp qw(carp cluck);
 use Try::Tiny;
 
-our $VERSION = '3.06';
+our $VERSION = '3.07';
 our $DEBUG   = 0;
 
 BEGIN {

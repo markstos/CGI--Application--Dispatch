@@ -1,7 +1,10 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
+3.07 September 9th, 2011
+    Fix t/cgi.t test failures caused by Try::Tiny refactor in 3.05 (Yoshihiro Sasaki)
+
 3.06 September 9th, 2011
-    Typo fix in "use" statement (Nicholas Bamber) 
+    Typo fix in "use" statement, introduced in 3.05 (Nicholas Bamber) 
 
 3.05 September 5th, 2011
     Removed Exception::Class::TryCatch with the already required Try::Tiny thereby eliminating 
