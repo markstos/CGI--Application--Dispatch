@@ -1,5 +1,8 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
+3.06 September 9th, 2011
+    Typo fix in "use" statement (Nicholas Bamber) 
+
 3.05 September 5th, 2011
     Removed Exception::Class::TryCatch with the already required Try::Tiny thereby eliminating 
     one dependency. (Timothy Appnel) 

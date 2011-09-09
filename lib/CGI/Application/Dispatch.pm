@@ -2,9 +2,9 @@ package CGI::Application::Dispatch;
 use strict;
 use warnings;
 use Carp qw(carp cluck);
-use Try:Tiny;
+use Try::Tiny;
 
-our $VERSION = '3.05';
+our $VERSION = '3.06';
 our $DEBUG   = 0;
 
 BEGIN {
