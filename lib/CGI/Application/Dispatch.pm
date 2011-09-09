@@ -342,7 +342,7 @@ sub dispatch {
     $path_info = "/$path_info" unless(index($path_info, '/') == 0);
     $path_info = "$path_info/" unless(substr($path_info, -1) eq '/');
 
-    my ($module, $rm, $local_prefix, $local_args_to_new);
+    my ($module, $rm, $local_prefix, $local_args_to_new, $output);
 
     # take args from path
     my $named_args;
@@ -350,23 +350,22 @@ sub dispatch {
         $named_args = $self->_parse_path($path_info, $args{table})
           or throw_not_found("Resource not found");
     } catch {
-        $e = Exception::Class‐>caught();
-        return $self->http_error($e, $args{error_document});
+        $output = $self->http_error($_, $args{error_document});
     };
+    return $output if $output;
 
     if($DEBUG) {
         require Data::Dumper;
         warn "[Dispatch] Named args from match: " . Data::Dumper::Dumper($named_args) . "\n";
     }
 
-    if(exists($named_args->{PARAMS}) || exists($named_args->{TMPL_PATH})) {
-        carp "PARAMS and TMPL_PATH are not allowed here. Did you mean to use args_to_new?";
-        throw_error("PARAMS and TMPL_PATH not allowed");
-    }
-
     # eval and catch any exceptions that might be thrown
-    my ($output, @final_dispatch_args);
     try {
+        if(exists($named_args->{PARAMS}) || exists($named_args->{TMPL_PATH})) {
+            carp "PARAMS and TMPL_PATH are not allowed here. Did you mean to use args_to_new?";
+            throw_error("PARAMS and TMPL_PATH not allowed");
+        }
+
         ($module, $local_prefix, $rm, $local_args_to_new) =
           delete @{$named_args}{qw(app prefix rm args_to_new)};
 
@@ -402,12 +401,15 @@ sub dispatch {
         }
 
         # load and run the module
-        @final_dispatch_args = ($module, $rm, $local_args_to_new);
         $self->require_module($module);
         $output = $self->_run_app($module, $rm, $local_args_to_new);
     } catch {
-        $e = Exception::Class‐>caught();
-        return $self->http_error($e, $args{error_document});
+        my $e = $_;
+        unless ( ref $e ) {
+            local $@ = $e;
+            $e = Exception::Class->caught();
+        }
+        $output = $self->http_error($e, $args{error_document});
     };
     return $output;
 }
