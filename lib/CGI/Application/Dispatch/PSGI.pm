@@ -12,7 +12,8 @@ our $DEBUG   = 0;
 
 =head1 NAME
 
-CGI::Application::Dispatch::PSGI - Dispatch requests to CGI::Application based objects using PSGI
+CGI::Application::Dispatch::PSGI - Dispatch requests to
+CGI::Application based objects using PSGI
 
 =head1 SYNOPSIS
 
@@ -192,7 +193,8 @@ sub as_psgi {
         # use the 'default' if we need to
         $path_info = $args{default} || '' if(!$path_info || $path_info eq '/');
 
-        # make sure they all start and end with a '/', to correspond with the RE we'll make
+        # make sure they all start and end with a '/', to correspond
+        # with the RE we'll make
         $path_info = "/$path_info" unless(index($path_info, '/') == 0);
         $path_info = "$path_info/" unless(substr($path_info, -1) eq '/');
 
@@ -260,7 +262,8 @@ sub as_psgi {
             $psgi_app =  $self->_run_app($module, $rm, $local_args_to_new,$env);
         };
         if (my $e = HTTP::Exception->caught) {
-            # XXX I think this is a bug, because http_error returns HTML, not a PSGI app.
+            # XXX I think this is a bug, because http_error returns
+            # HTML, not a PSGI app.
             return $self->http_error($e);
         }
         elsif ($e = Exception::Class->caught) {

@@ -83,7 +83,8 @@ sub _parse_path {
 
     for(my $i = 0 ; $i < scalar(@$table) ; $i += 2) {
 
-        # translate the rule into a regular expression, but remember where the named args are
+        # translate the rule into a regular expression, but remember
+        # where the named args are
         my $rule = $table->[$i];
 
         warn
