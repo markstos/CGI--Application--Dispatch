@@ -886,11 +886,11 @@ before the user blocks.
     # Run "/" through the dispatcher
     RewriteRule ^/home/mark/www/$ /~mark/cgi-bin/dispatch.cgi [L,QSA]
 
-     # Otherwise, if an actual file or directory is requested, serve directly
+    # Otherwise, if an actual file or directory is requested, serve directly
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
 
-     # Otherwise, pass everything through to the dispatcher
+    # Otherwise, pass everything through to the dispatcher
     RewriteRule ^(.*)$ /~mark/cgi-bin/dispatch.cgi/$1 [L,QSA]
 
     # These examples may also be helpful, but are unrelated to dispatching.
