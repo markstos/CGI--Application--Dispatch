@@ -341,7 +341,8 @@ sub dispatch {
           unless exists($args{error_document});
     }
 
-    %args = map { lc $_ => $args{$_} } keys %args;    # lc for backwards compatability
+    %args = map { lc $_ => $args{$_} } keys %args;    # lc for backwards
+                                                      # compatability
 
     # get the PATH_INFO
     my $path_info = $self->dispatch_path();
@@ -349,7 +350,8 @@ sub dispatch {
     # use the 'default' if we need to
     $path_info = $args{default} || '' if(!$path_info || $path_info eq '/');
 
-    # make sure they all start and end with a '/', to correspond with the RE we'll make
+    # make sure they all start and end with a '/', to correspond with
+    # the RE we'll make
     $path_info = "/$path_info" unless(index($path_info, '/') == 0);
     $path_info = "$path_info/" unless(substr($path_info, -1) eq '/');
 
@@ -569,8 +571,9 @@ sub http_error {
 
             unless($output) {
 
-                # TODO: possibly provide more feedback in a way that is XSS safe.
-                # (I'm not sure that passing through the raw ENV variable directly is safe.)
+                # TODO: possibly provide more feedback in a way that
+                # is XSS safe.  (I'm not sure that passing through the
+                # raw ENV variable directly is safe.)
                 # <P>We tried: $ENV{REQUEST_URI}</P></BODY></HTML>";
                 $output = qq(
                 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
@@ -641,13 +644,15 @@ sub _parse_path {
             $rule =~ s/$http_method_regex//;
         }
 
-        # make sure they start and end with a '/' to match how PATH_INFO is formatted
+        # make sure they start and end with a '/' to match how
+        # PATH_INFO is formatted
         $rule = "/$rule" unless(index($rule, '/') == 0);
         $rule = "$rule/" if(substr($rule, -1) ne '/');
 
         my @names = ();
 
-        # translate the rule into a regular expression, but remember where the named args are
+        # translate the rule into a regular expression, but remember
+        # where the named args are
         # '/:foo' will become '/([^\/]*)'
         # and
         # '/:bar?' will become '/?([^\/]*)?'

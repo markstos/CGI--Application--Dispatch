@@ -355,7 +355,8 @@ sub http_error {
     my $errno  = $e->isa('HTTP::Exception::Base') ? $e->code           : 500;
     my $output = $e->isa('HTTP::Exception::Base') ? $e->status_message : "Internal Server Error";
 
-    # The custom status message was most useful for logging. Return generic messages to the user.
+    # The custom status message was most useful for logging. Return
+    # generic messages to the user.
     $output = 'Not Found'             if ($e->code == 404);
     $output = 'Internal Server Error' if ($e->code == 500);
 
@@ -392,13 +393,15 @@ sub _parse_path {
             $rule =~ s/$http_method_regex//;
         }
 
-        # make sure they start and end with a '/' to match how PATH_INFO is formatted
+        # make sure they start and end with a '/' to match how
+        # PATH_INFO is formatted
         $rule = "/$rule" unless(index($rule, '/') == 0);
         $rule = "$rule/" if(substr($rule, -1) ne '/');
 
         my @names = ();
 
-        # translate the rule into a regular expression, but remember where the named args are
+        # translate the rule into a regular expression, but remember
+        # where the named args are
         # '/:foo' will become '/([^\/]*)'
         # and
         # '/:bar?' will become '/?([^\/]*)?'
