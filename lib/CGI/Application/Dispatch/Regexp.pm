@@ -8,28 +8,37 @@ our $VERSION = '3.04';
 
 =head1 NAME
 
-CGI::Application::Dispatch::Regexp -  Dispatch requests to CGI::Application based objects using regular expressions
+CGI::Application::Dispatch::Regexp - Dispatch requests to
+CGI::Application based objects using regular expressions
 
 =head1 SYNOPSIS
 
     use CGI::Application::Dispatch::Regexp;
 
     CGI::Application::Dispatch::Regexp->dispatch(
-            prefix  => 'MyApp',
-            table   => [
-                ''                                    => { app => 'Welcome', rm => 'start' },
-                qr|/([^/]+)/?|                        => { names => ['app']                },
-                qr|/([^/]+)/([^/]+)/?|                => { names => [qw(app rm)]           },
-                qr|/([^/]+)/([^/]+)/page(\d+)\.html?| => { names => [qw(app rm page)]      },
-            ],
+        prefix  => 'MyApp',
+        table   => [
+            ''                                    => { app => 'Welcome',
+                                                       rm  => 'start',
+                                                     },
+            qr|/([^/]+)/?|                        => { names => ['app'],
+                                                     },
+            qr|/([^/]+)/([^/]+)/?|                => { names =>
+                                                         [qw(app rm)]
+                                                     },
+            qr|/([^/]+)/([^/]+)/page(\d+)\.html?| => { names =>
+                                                         [qw(app rm page)]
+                                                     },
+        ],
     );
 
 
 =head1 DESCRIPTION
 
 L<CGI::Application::Dispatch> uses its own syntax dispatch table.
-C<CGI::Application::Dispatch::Regexp> allows one to use flexible and powerful Perl
-regular expressions to transform a path into argument list.
+C<CGI::Application::Dispatch::Regexp> allows one to use flexible and
+powerful Perl regular expressions to transform a path into argument
+list.
 
 =head1 DISPATCH TABLE
 
@@ -44,7 +53,9 @@ expression groups. The default table looks like this:
 
 Here's an example of defining a custom 'page' parameter:
 
-        qr|/([^/]+)/([^/]+)/page(\d+)\.html/?| => { names => [qw(app rm page)] },
+        qr|/([^/]+)/([^/]+)/page(\d+)\.html/?| => {
+            names => [qw(app rm page)],
+        },
 
 
 =head1 COPYRIGHT & LICENSE
@@ -72,7 +83,8 @@ sub _parse_path {
 
     for(my $i = 0 ; $i < scalar(@$table) ; $i += 2) {
 
-        # translate the rule into a regular expression, but remember where the named args are
+        # translate the rule into a regular expression, but remember
+        # where the named args are
         my $rule = $table->[$i];
 
         warn
