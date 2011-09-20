@@ -10,6 +10,7 @@ eval "require $build_pkg";
 my $build = $build_pkg->new(
     module_name => 'CGI::Application::Dispatch',
     license     => 'perl',
+    configure_requires => { 'Module::Build' => 0.38 },
     requires    => {
         'perl'                       => '5.6.0',
         # a new 'version' is only required to solve rare install problem.
@@ -18,7 +19,6 @@ my $build = $build_pkg->new(
         'CGI::Application'           => '4.50', # For native PSGI support.
         'HTTP::Exception'            => 0,
         'Exception::Class'           => 1.2,
-        'Exception::Class::TryCatch' => 0,
         'Try::Tiny'                  => 0,
     },
     build_requires => {
