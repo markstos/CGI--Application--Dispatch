@@ -193,7 +193,7 @@ B<A string with error message>
 character will be trimmed from final output.
 
 B<A file with content of error document>
-- if it starts with greater-than sign (C<<>). First character will be excluded
+- if it starts with less-than sign (C<<>). First character will be excluded
 as well. Path of this file should be relative to server DOCUMENT_ROOT.
 
 B<A URI to which the application will be redirected> - if no leading C<"> or
@@ -860,7 +860,7 @@ sub dispatch_args {
 =head2 translate_module_name($input)
 
 This method is used to control how the module name is translated from
-the matching section of the path (see L<"Path Parsing">.
+the matching section of the path (see L<"Path Parsing">).
 The main reason that this method exists is so that it can be overridden if it doesn't do
 exactly what you want.
 
