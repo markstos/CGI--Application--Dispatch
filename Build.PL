@@ -28,6 +28,11 @@ my $build = $build_pkg->new(
         'Plack'      => 0.9956, # really, we just depend on Plack::Test, but Plack::Test has not declared a version.
         $have_apache_test ? ( 'Apache::Test' => 0 ) : (),
     },
+    meta_merge => {
+        resources => {
+            repository => 'https://github.com/markstos/CGI--Application--Dispatch',
+        },
+    },
 );
 
 $build->create_build_script;
