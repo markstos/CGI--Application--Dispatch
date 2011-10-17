@@ -812,7 +812,7 @@ sub handler : method {
     # setup our args to dispatch()
     my %args;
     my $config_args = $r->dir_config();
-    for my $var qw(DEFAULT PREFIX ERROR_DOCUMENT) {
+    for my $var (qw(DEFAULT PREFIX ERROR_DOCUMENT)) {
         my $dir_var = "CGIAPP_DISPATCH_$var";
         $args{lc($var)} = $config_args->{$dir_var}
           if($config_args->{$dir_var});
