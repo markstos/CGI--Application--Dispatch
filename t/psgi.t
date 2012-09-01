@@ -8,7 +8,6 @@ use Module::Name;
 use MyApp::Module::Name;
 use MyApp::DispatchPSGI;
 use MyApp::DispatchTablePSGI;
-use MyApp::DispatchRestPSGI;
 
 my $output = '';
 
@@ -207,7 +206,7 @@ test_psgi
             ':app/rm3[get]' => { rm => 'get_rm3', auto_rest => 0 },
             ':app/rm4'      => { auto_rest => 0, rm => 'rm4' },
             ':app/rm2'      => { auto_rest_lc => 1, rm => 'rm2' },
-            ':app/:rm'      => { },
+            ':app/:rm?'     => { },
         ],
     ),
     client => sub {
@@ -240,6 +239,9 @@ test_psgi
         like($res->content, qr{App::Module::Rest->rm4}, 'non-auto_rest POST');
         unlike($res->content, qr{App::Module::Rest->rm4_POST}, 'non-auto_rest POST');
 
+        $res = $cb->(GET '/module_rest');
+        ok($res->is_success);
+        like($res->content, qr{MyApp::Module::Rest->rm1_GET}, 'auto_rest check of /:rm? and start_mode');
     };
 
 
