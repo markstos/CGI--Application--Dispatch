@@ -420,8 +420,7 @@ sub dispatch {
     } catch {
         my $e = $_;
         unless ( ref $e ) {
-            local $@ = $e;
-            $e = Exception::Class->caught();
+            $e = Exception::Class::Base->new($e);
         }
         $output = $self->http_error($e, $args{error_document});
     };
