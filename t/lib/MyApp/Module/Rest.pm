@@ -3,7 +3,7 @@ use base 'CGI::Application';
 
 sub setup {
     my $self = shift;
-    $self->start_mode('rm1');
+    $self->start_mode('rm1_GET');
     $self->run_modes([qw/
         rm1_GET
         rm1_POST
