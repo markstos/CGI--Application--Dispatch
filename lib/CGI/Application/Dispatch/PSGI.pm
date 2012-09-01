@@ -247,7 +247,7 @@ sub as_psgi {
 
             my $auto_rest =
             defined $named_args->{auto_rest} ? $named_args->{auto_rest} : $args{auto_rest};
-            if($auto_rest) {
+            if($auto_rest && defined $rm && length $rm) {
                 my $method_lc =
                 defined $named_args->{auto_rest_lc}
                 ? $named_args->{auto_rest_lc}
