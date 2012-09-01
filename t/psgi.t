@@ -8,6 +8,7 @@ use Module::Name;
 use MyApp::Module::Name;
 use MyApp::DispatchPSGI;
 use MyApp::DispatchTablePSGI;
+use MyApp::DispatchRestPSGI;
 
 my $output = '';
 
@@ -196,6 +197,52 @@ test_psgi
             $cb->(GET '/somewhere_else')->status_line,
             qr/404 not found/i,
     };
+
+# auto_rest
+test_psgi
+    app => CGI::Application::Dispatch::PSGI->as_psgi(
+        auto_rest => 1,
+        prefix    => 'MyApp',
+        table     => [
+            ':app/rm3[get]' => { rm => 'get_rm3', auto_rest => 0 },
+            ':app/rm4'      => { auto_rest => 0, rm => 'rm4' },
+            ':app/rm2'      => { auto_rest_lc => 1, rm => 'rm2' },
+            ':app/:rm'      => { },
+        ],
+    ),
+    client => sub {
+        my $cb = shift;
+        my $res = $cb->(GET '/module_rest/rm1');
+        ok($res->is_success);
+        like($res->content, qr{MyApp::Module::Rest->rm1_GET}, 'auto_rest GET');
+
+        $res = $cb->(POST '/module_rest/rm1');
+        ok($res->is_success);
+        like($res->content, qr{MyApp::Module::Rest->rm1_POST}, 'auto_rest POST');
+
+        $res = $cb->(POST '/module_rest/rm2');
+        ok($res->is_success);
+        $content = $res->content;
+        like($res->content, qr{App::Module::Rest->rm2_post}, 'auto_rest_lc POST');
+
+        $res = $cb->(GET '/module_rest/rm3');
+        ok($res->is_success);
+        $content = $res->content;
+        like($res->content, qr{App::Module::Rest->get_rm3}, 'HTTP method in rule');
+
+        $res = $cb->(GET '/module_rest/rm4');
+        ok($res->is_success);
+        like($res->content, qr{App::Module::Rest->rm4}, 'non-auto_rest GET');
+        unlike($res->content, qr{App::Module::Rest->rm4_GET}, 'non-auto_rest GET');
+
+        $res = $cb->(POST '/module_rest/rm4');
+        ok($res->is_success);
+        like($res->content, qr{App::Module::Rest->rm4}, 'non-auto_rest POST');
+        unlike($res->content, qr{App::Module::Rest->rm4_POST}, 'non-auto_rest POST');
+
+    };
+
+
 
 # restore STDERR
 {
