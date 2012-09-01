@@ -693,8 +693,18 @@ with the L<prefix> if there is one.
 
 =item :rm
 
-This is the run mode of the application. The value of this token will
-be the actual name of the run mode used.
+This is the run mode of the application. The value of this token will be the
+actual name of the run mode used. The run mode can be optional, as
+noted below. Example:
+
+    /foo/:rm?
+
+If no run mode is found, it will default to using the C<< start_mode() >>, just like
+invoking CGI::Application directly. Both of these URLs would end up dispatching
+to the start mode associated with /foo:
+
+    /foo/
+    /foo
 
 =back
 
