@@ -1,5 +1,6 @@
 package MyApp::Module::Name;
 use base 'CGI::Application';
+use HTTP::Exception;
 
 sub setup {
     my $self = shift;
@@ -11,7 +12,9 @@ sub setup {
         rm4
         rm5
         local_args_to_new
+        throw_http_exception
     /]); 
+    $self->error_mode('rethrow_http_exceptions');
 }
 
 sub rm1 {
@@ -58,5 +61,22 @@ sub local_args_to_new {
     return $self->tmpl_path;
 }
 
+sub throw_http_exception {
+   HTTP::Exception->throw(405, status_message => 'my 405 exception!');
+}
+
+sub rethrow_http_exceptions {
+    my ($self,$e) = shift;
+
+    # Duck-type to see if we have an HTTP::Exception 
+    if (defined $e && $e->can('status_method')) {
+        die $e;
+    }
+    # In this case, just die then, too...
+    else {
+        die $e;
+    }
+
+}
 
 1;

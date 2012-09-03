@@ -169,7 +169,7 @@ my $junk;
               'named url remainder';
       };
   
-  # args_to_new
+  # args_to_new, throwing HTTP::Exceptions
   test_psgi
       app => CGI::Application::Dispatch::PSGI->as_psgi(
           prefix => 'MyApp',
@@ -178,10 +178,16 @@ my $junk;
       ),
       client => sub {
           my $cb = shift;
-          like
-              $cb->(GET '/module_name/local_args_to_new')->content,
+
+          # args_to_new
+          like $cb->(GET '/module_name/local_args_to_new')->content,
               qr/events/, 
               'args_to_new works';
+
+           # When an HTTP::Exception is thrown from error_mode, it is passed through.  
+           my $res = $cb->(GET '/module_name/throw_http_exception');
+           is($res->code,405,"a thrown HTTP::Exception is bubbled up");  
+           like($res->as_string, qr/my 405 exception/, "HTTP::Exception content is passed along"); 
       };
 
 # 404
@@ -243,8 +249,6 @@ test_psgi
         ok($res->is_success);
         like($res->content, qr{MyApp::Module::Rest->rm1_GET}, 'auto_rest check of /:rm? and start_mode');
     };
-
-
 
 # restore STDERR
 {
