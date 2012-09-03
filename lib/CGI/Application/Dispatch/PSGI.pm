@@ -3,9 +3,8 @@ use strict;
 use warnings;
 use Carp qw(carp cluck);
 use HTTP::Exception;
-use Try::Tiny;
 
-our $VERSION = '3.04';
+our $VERSION = '3.10';
 our $DEBUG   = 0;
 
 =pod

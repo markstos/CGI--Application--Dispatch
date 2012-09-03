@@ -1,5 +1,26 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
+3.10 September 2nd, 2012
+    [NEW FEATURES]
+    - CGI::Application::Dispatch::PSGI now allows exceptions thrown as HTTP::Exception objects
+      to bubble up in some cases. See the new documentation section on "Exception Handling"
+      for details. (Mark Stosberg, Graham TerMarsch, RT#79022)  
+
+    [BUG FIXES]
+    - When auto_rest was enabled and no run mode was found, a 404 could have been returned
+      instead of defaulting to start mode. We now correctly default to the start_mode().
+      (James Q.L., Ron Savage, Mark Stosberg)
+
+    [DOCUMENTATION]
+    - Docs have been expanded to explain how /foo/:rm? resolves, and interaction
+      with start_mode() when no run mode is found. (Mark Stosberg)
+
+    [INTERNALS]
+    - Fix diagnostic message in some cases when exceptions are thrown (Michael Lackhoff)
+    - Added test coverage for auto_rest to CGI::Application::Dispatch::PSGI (Mark Stosberg) 
+    - POD formatting fix in Dispatch.pm
+    - Fix Perl 5.14 compatibility warning (chorny, RENEEB@cpan.org, SILASMONK@cpan.org)  
+
 3.07 September 9th, 2011
     Fix t/cgi.t test failures caused by Try::Tiny refactor in 3.05 (Yoshihiro Sasaki)
 
