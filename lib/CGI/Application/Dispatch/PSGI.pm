@@ -461,7 +461,8 @@ sub _run_app {
     # now create and run then application object
     warn "[Dispatch] creating instance of $module\n" if($DEBUG);
 
-    try {
+    my $psgi;
+    eval {
         my $app = do {
             if (ref($args) eq 'HASH' and not defined $args->{QUERY}) {
                 require CGI::PSGI;
@@ -476,18 +477,31 @@ sub _run_app {
             }
         };
         $app->mode_param(sub { return $rm }) if($rm);
-        return $app->run_as_psgi;
-    }
-    catch {
-        # catch invalid run-mode stuff
-        if(not ref $_ and  $_ =~ /No such run mode/) {
-            HTTP::Exception->throw(404, status_message => "RM '$rm' not found");
-        }
-        # otherwise, just pass it up the chain
-        else {
-            HTTP::Exception->throw(500, status_message => "Unknown error: $_");
-        }
+        $psgi = $app->run_as_psgi;
     };
+
+    # App threw an HTTP::Exception? Cool. Bubble it up.
+    my $e;
+    if ($e = HTTP::Exception->caught) {
+        $e->rethrow;   
+    } 
+    else {
+          $e = Exception::Class->caught();
+
+          # catch invalid run-mode stuff
+          if (not ref $e and  $e =~ /No such run mode/) {
+              HTTP::Exception->throw(404, status_message => "RM '$rm' not found");
+          }
+          # otherwise, it's an internal server error.
+          elsif (defined $e and length $e) {
+              HTTP::Exception->throw(500, status_message => "Unknown error: $e");
+              #return $psgi;
+          }
+          else {
+              # no exception
+              return $psgi;
+          }
+    }
 }
 
 =head2 dispatch_args()
