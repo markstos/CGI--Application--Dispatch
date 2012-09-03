@@ -820,6 +820,17 @@ same example, if we have a path of
 
 Then the string 'mode2' is used as the run mode.
 
+=head1 Exception Handling
+
+A CGI::Application object can throw an exception up to C<<
+CGI::Application::Dispatch::PSGI >> if no C<error_mode()> is implemented or if
+the error_mode itself throws an exception. In these cases we generally return a
+generic "500" response, and log some details for the developer with a warning.
+
+However, we will check to see if the exception thrown is an HTTP::Exception
+object. If that's the case, we will rethrow it, and you can handle it yourself using
+something like L<Plack::Middleware::HTTPExceptions>.
+
 =head1 MISC NOTES
 
 =over 8
