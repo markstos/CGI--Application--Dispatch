@@ -66,7 +66,8 @@ sub throw_http_exception {
 }
 
 sub rethrow_http_exceptions {
-    my ($self,$e) = shift;
+    my $self = shift;
+    my $e    = shift;
 
     # Duck-type to see if we have an HTTP::Exception 
     if (defined $e && $e->can('status_method')) {
