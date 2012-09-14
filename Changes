@@ -1,5 +1,11 @@
 Revision history for Perl extension CGI::Application::Dispatch.
 
+3.11 September 10th, 2012
+    (No code changes) 
+
+    [INTERNALS]
+    -  Fixed test for rethrowing HTTP::Exception objects (Graham TerMarsch)
+
 3.10 September 2nd, 2012
     [NEW FEATURES]
     - CGI::Application::Dispatch::PSGI now allows exceptions thrown as HTTP::Exception objects

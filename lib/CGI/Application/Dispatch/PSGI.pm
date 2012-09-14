@@ -4,7 +4,7 @@ use warnings;
 use Carp qw(carp cluck);
 use HTTP::Exception;
 
-our $VERSION = '3.10';
+our $VERSION = '3.11';
 our $DEBUG   = 0;
 
 =pod
