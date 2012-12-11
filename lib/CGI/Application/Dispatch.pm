@@ -447,10 +447,7 @@ sub dispatch_path {
 
 sub http_error {
     my ($self, $e, $errdoc) = @_;
-
-    warn '[Dispatch] ERROR'
-      . ($ENV{REQUEST_URI} ? " for request '$ENV{REQUEST_URI}': " : ': ')
-      . $e->error . "\n";
+    my $err_msg = '[Dispatch] ERROR' . ($ENV{REQUEST_URI} ? " for request '$ENV{REQUEST_URI}': " : ': ') . $e->error;
 
     my $errno =
         $e->isa('CGI::Application::Dispatch::Exception')
@@ -494,11 +491,14 @@ sub http_error {
     if(IS_MODPERL) {
         my $r = $self->_r;
         $r->status($errno);
+        $r->log_error($err_msg);
+        $r->notes('error-notes', $err_msg);
 
         # if we just want to redirect
         $r->headers_out->{'Location'} = $url if $url;
         return '';
     } else {    # else print the HTTP stuff ourselves
+        warn $err_msg;
 
         # stolen from http_protocol.c in Apache sources
         # we don't actually use anything other than 200, 307, 400, 404 and 500
