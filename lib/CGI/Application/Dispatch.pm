@@ -1300,7 +1300,7 @@ located at L<http://www.cgi-app.org/>
 
 A public source code repository for this project is hosted here:
 
-http://code.google.com/p/cgi-app-modules/source/checkout
+https://github.com/markstos/CGI--Application--Dispatch
 
 =head1 CONTRIBUTORS
 
