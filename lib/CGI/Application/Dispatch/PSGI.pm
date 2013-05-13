@@ -466,13 +466,10 @@ sub _run_app {
             if (ref($args) eq 'HASH' and not defined $args->{QUERY}) {
                 require CGI::PSGI;
                 $args->{QUERY} = CGI::PSGI->new($env);
-                $module->new($args);
-            }
-            elsif (ref($args) eq 'HASH') {
-                $module->new($args);
+                $self->_build_app($module, $args);
             }
             else {
-                $module->new();
+                $self->_build_app($module, $args);
             }
         };
         $app->mode_param(sub { return $rm }) if($rm);
@@ -501,6 +498,11 @@ sub _run_app {
               return $psgi;
           }
     }
+}
+
+sub _build_app {
+    my ($self, $module, $args) = @_;
+    return ref($args) eq 'HASH' ? $module->new($args) : $module->new();
 }
 
 =head2 dispatch_args()
