@@ -252,7 +252,7 @@ This can be overridden on a per-rule basis in a custom dispatch table.
 
 =item auto_rest_lc
 
-In combinaion with L<auto_rest> this tells Dispatch that you prefer
+In combination with L<auto_rest> this tells Dispatch that you prefer
 lower cased HTTP method names.  So instead of C<foo_POST> and
 C<foo_GET> you'll have C<foo_post> and C<foo_get>.
 
@@ -263,7 +263,7 @@ C<foo_GET> you'll have C<foo_post> and C<foo_get>.
 sub dispatch {
     my ($self, %args) = @_;
 
-    # merge dispatch_args() and %args with %args taking precendence
+    # merge dispatch_args() and %args with %args taking precedence
     my $dispatch_args = $self->dispatch_args(\%args);
     for my $arg (keys %$dispatch_args) {
 
@@ -284,7 +284,7 @@ sub dispatch {
             # combine any TMPL_PATHs
             if($dispatch_args->{args_to_new}->{TMPL_PATH}) {
 
-                # make sure the orginial is an array ref
+                # make sure the original is an array ref
                 if($args{args_to_new}->{TMPL_PATH}) {
                     if(!ref $args{args_to_new}->{TMPL_PATH}) {
                         $args{args_to_new}->{TMPL_PATH} = [$args{args_to_new}->{TMPL_PATH}];
@@ -343,7 +343,7 @@ sub dispatch {
     }
 
     %args = map { lc $_ => $args{$_} } keys %args;    # lc for backwards
-                                                      # compatability
+                                                      # compatibility
 
     # get the PATH_INFO
     my $path_info = $self->dispatch_path();
@@ -983,7 +983,7 @@ C<TMPL_PATH> into L<args_to_new>. Next it sets the L<table>.
 
 Just so we all understand what we're talking about....
 
-A table is an array where the elements are gouped as pairs (similar to
+A table is an array where the elements are grouped as pairs (similar to
 a hash's key-value pairs, but as an array to preserve order). The
 first element of each pair is called a C<rule>. The second element in
 the pair is called the rule's C<arg list>.  Inside a rule there are
@@ -1019,7 +1019,7 @@ referred to by using the C<< $self->param >> mechanism. In the rule
     'posts/:category'
 
 C<:category> is a variable token. If the URL matched this rule, then
-you could retrieve the value of that token from whithin your
+you could retrieve the value of that token from within your
 application like so:
 
     my $category = $self->param('category');
@@ -1124,7 +1124,7 @@ default uses the C<PATH_INFO> environment variable.
 =head2 Getting the module name
 
 To get the name of the application module the path is split on
-backslahes (C</>).  The second element of the returned list (the first
+backslashes (C</>).  The second element of the returned list (the first
 is empty) is used to create the application module. So if we have a
 path of
 
