@@ -713,7 +713,7 @@ sub _run_app {
 
     my $output;
     eval {
-        my $app = ref($args) eq 'HASH' ? $module->new($args) : $module->new();
+        my $app = $self->_build_app($module, $args);
         $app->mode_param(sub { return $rm }) if($rm);
         $output = $app->run();
     };
@@ -731,6 +731,11 @@ sub _run_app {
     }
 
     return $output;
+}
+
+sub _build_app {
+    my ($self, $module, $args) = @_;
+    return ref($args) eq 'HASH' ? $module->new($args) : $module->new();
 }
 
 =head2 handler()
