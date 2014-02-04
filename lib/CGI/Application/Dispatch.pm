@@ -250,6 +250,14 @@ C<< MyApp::Module->foo_GET >>.
 
 This can be overridden on a per-rule basis in a custom dispatch table.
 
+=item auto_rest_tunneling
+
+Used in combination with L<auto_rest>, this tell Dispatch that if the HTTP method is a POST and a C<_mode> param is present, its value is to be used as the HTTP method in resolving the run mode. Effectively C<_mode> needs to be an HTTP method, namely PUT or DELETE. The value of C<_mode> is treated case insenstively. Ifa C<_mode> param is not included with the request it is processed as a POST.
+
+This technique was introduced in Ruby On Rails and later implemented by numerous web frameworks such as Django to support REST despite browsers where PUT and DELETE HTTP method requests are not supported.
+
+The L<auto_rest> option must be enabled otherwise this option is ignored despite its value.
+
 =item auto_rest_lc
 
 In combination with L<auto_rest> this tells Dispatch that you prefer
@@ -329,6 +337,7 @@ sub dispatch {
             or $_ eq 'table'
             or $_ eq 'auto_rest'
             or $_ eq 'auto_rest_lc'
+            or $_ eq 'auto_rest_tunneling'
             or $_ eq 'not_found'
             or $_ eq 'error_document');
         carp "Passing extra args ('$_') to dispatch() is deprecated! Please use 'args_to_new'";
@@ -409,9 +418,23 @@ sub dispatch {
               defined $named_args->{auto_rest_lc}
               ? $named_args->{auto_rest_lc}
               : $args{auto_rest_lc};
+            my $tunneling =
+              defined $named_args->{auto_rest_tunneling}
+              ? $named_args->{auto_rest_tunneling}
+              : $args{auto_rest_tunneling};
             my $http_method = $self->_http_method;
-            $http_method = lc $http_method if $method_lc;
-            $rm .= "_$http_method";
+            if($tunneling && $http_method eq 'POST') {
+                $rm = sub {
+                    my $self = shift;
+                    my $rest_method = $self->query->param('_method') ||
+                    'POST';
+                    $rest_method = lc $rest_method if $method_lc;
+                    return $rm.'_'.$rest_method;
+                };
+            } else {
+                $http_method = lc $http_method if $method_lc;
+                $rm .= "_$http_method";
+            }
         }
 
         # load and run the module
@@ -701,8 +724,7 @@ sub _run_app {
         warn "[Dispatch] Final args to pass to new(): " . Data::Dumper::Dumper($args) . "\n";
     }
 
-    if($rm) {
-
+    if($rm && ref($rm) ne 'CODE') {
         # check runmode name
         ($rm) = ($rm =~ /^([a-zA-Z_][\w']+)$/);
         throw_bad_request("Invalid characters in runmode name") unless $rm;
@@ -714,7 +736,9 @@ sub _run_app {
     my $output;
     eval {
         my $app = ref($args) eq 'HASH' ? $module->new($args) : $module->new();
-        $app->mode_param(sub { return $rm }) if($rm);
+        if ($rm) {
+            $app->mode_param( ref($rm) eq 'CODE' ? $rm : sub { return $rm } );
+        }
         $output = $app->run();
     };
 
